@@ -39,7 +39,51 @@ public:
 
     }
 //**Update person's info
-    bool update();
+    bool update(){
+        cout << "Which primary info would you like to update?" << endl
+    		 << "1. Name" << endl
+    		 << "2. Age" << endl
+    		 << "3. Gender" << endl
+    		 << "4. Date of Birth" << endl
+    		 << "5. Phone Number" << endl;
+             << "6. None" << endl;
+    	cout << endl << "Choose a field =>";
+		
+        int y;
+		cin >> y;
+		
+		switch(y){
+			
+			case 1: 
+				cout << "New Name : ";
+				getline(cin, name);
+				break;
+			case 2:
+				cout << "New Age : ";
+				cin >> age;
+				break;
+			case 3:
+				cout << "New Gender : ";
+				getline(cin, gender);
+				break;
+			case 4:
+				cout << "New Date of Birth : ";
+				getline(cin, dateofBirth);
+				break;
+			case 5:
+				cout << "New Phone Number : ";
+				getline(cin, phoneNo);
+				break;
+            case 6:
+                cout << "Please proceed to secondary info";
+                break;
+			default:
+				cout << "Please choose a number from 1 to 6.";
+				break;	
+		} 
+    		 
+    	return 1;
+}
 
 //View person's info
     void dispInfo(){

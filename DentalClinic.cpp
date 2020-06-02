@@ -39,6 +39,8 @@ public:
     }
 //Update person's info
     bool update();
+    
+//View person's info
     void dispInfo(){
         cout << "Name : " << name << endl;
         cout << "Age : "<<age << endl;
@@ -76,13 +78,14 @@ int main(){
         cout << endl;
 
         switch(i){
-        case 1:
+           case 1:
                 cout <<"<<< Enter the information of the person >>>" << endl << endl;
                 debug[n].create();
                 n+=1;
 
                 break;
         case 2:
+                //will print all of the inputted people
                 cout <<"<<< Inventory of people >>>" << endl << endl;
                 cout << "Total people: " << n << endl << endl;
 

@@ -7,6 +7,9 @@ using namespace std;
 
 const int MAX = 1000;
 
+//##################### CLASS DEFINITIONS #########################
+
+
 class Person{
 private:
     string name;
@@ -16,9 +19,9 @@ private:
     int age;
 
 public:
-    Person(string n="", string g="",string d="", string p="", int a=0 ){
-        name = n;
-    }
+    // Person(string n="", string g="",string d="", string p="", int a=0 ){
+    //     name = n;
+    // }
 
 //Create new person
     bool create(){
@@ -41,8 +44,14 @@ public:
 //**Update person's info
     bool update();
 
+//Get person name
+    string getName(){
+        return name;
+    }
+
 //View person's info
     void dispInfo(){
+        cout << "::: BASIC INFORMATION :::" << endl << endl;
         cout << "Name : " << name << endl;
         cout << "Age : "<<age << endl;
         cout << "Gender : "<<gender<< endl;
@@ -57,8 +66,11 @@ private:
     float temp;
     string currentIllness;
 public:
-    Screening();
-
+    Screening(){}
+    void setScreening(float temp, string currentIllness){
+        this->temp = temp;
+        this->currentIllness = currentIllness;
+    }
     void inputScreen(){
         cout << "Enter the patient's temperature : " ;
         cin >> temp;
@@ -84,9 +96,9 @@ class MedHistory{
 private:
     string ongoingMed,previousVisit,famMedHist;
 public:
-    MedHistory(string ongoingMed="", string previousVisit="",string famMedHist=""){
+    // MedHistory(string ongoingMed="", string previousVisit="",string famMedHist=""){
 
-    }
+    // }
     bool insert(){
         cout << "Ongoing medications : ";
         getline(cin,ongoingMed);
@@ -98,17 +110,58 @@ public:
         return 1;
     }
 
+    void dispMedHistory(){
+
+        cout << "Ongoing medications : " << ongoingMed << endl
+            << "Previous visit here : " << previousVisit << endl
+            << "Family medical history : " << famMedHist << endl << endl;
+    }
+
 };
+
+class Treatment;
 
 class Patient : public Person{
 private:
-
+    MedHistory *medHist;
+    Screening *screeningResults;
+    Treatment *treatmentResults;
+    string time;
 public:
+    Patient(){
+        medHist = new MedHistory;
+        screeningResults = new Screening;
+    }
+    bool createPatient(){
+        Person::create();
+        medHist->insert(); //** BUG, when called here cannot input. SOLVED by adding initializing the pointer at constructor
+
+        return 1;
+    }
+
+    //Adds screen results from the Screening class
+    void addcurrentCondition(){
+
+        // screeningResults->setScreening()
+    }
+
+    //Adds treatment results after treatment from doctor
+    void addtreatmentResults(){
+
+    }
+
+    void dispInfo(){
+        Person::dispInfo();
+        cout << "::: MEDICAL HISTORY OF " << getName() <<":::"<<endl << endl;
+        medHist->dispMedHistory();
+        cout << endl << "-----------------------------" << endl;
+
+    }
 };
 
 class Staff : public Person{
 protected:
-    char staffID[20];
+    string staffID;
     string role, employmentType;
     int salary;
 public:
@@ -116,7 +169,7 @@ public:
     bool createStaff(){
         create();
         cout << "Enter staff ID : " ;
-        cin >> staffID;
+        getline(cin,staffID);
         cout << "Enter staff role : ";
         getline(cin, role);
         cout << "Enter staff employment type";
@@ -136,23 +189,7 @@ class Nurse : public Staff{
 
 };
 
-class Treatment{
-private:
-    string medicine,symptoms,notes,date;
 
-public:
-    bool setTreatment(){
-        cout << "Enter the patient's type of medicine : ";
-        getline(cin, medicine);
-        cout << "Enter the patient's symptoms : ";
-        getline(cin, symptoms);
-        cout << "Enter additional notes/instructions : ";
-        getline(cin, notes);
-
-        return 1;
-    }
-
-};
 
 class Appointment{
 
@@ -163,7 +200,9 @@ void debugMenu(){
     cout<< "=====MENU=====" << endl
         << "1. Add a person" << endl
         << "2. Add staff" << endl
-        << "3. View person" << endl;
+         << "3. Add a patient" << endl
+         << "4. Add a medhistory" << endl
+        << "5. View person" << endl;
     cout << endl << "Choose an operation => ";
 }
 
@@ -174,10 +213,14 @@ int main(){
 
     Person *debug;
     Staff *debug2;
-    int i=0,n=1;
+    Patient *debug3;
+    MedHistory *debug4;
+    int i=0,n=0;
 
     debug = new Person[MAX];
     debug2 = new Staff[MAX];
+    debug3 = new Patient[MAX];
+    debug4 = new MedHistory[MAX];
 
 
     //TESTING THE RECORD SAVING FUNCTION
@@ -187,7 +230,7 @@ int main(){
         cout << endl;
 
         switch(i){
-           case 1:
+            case 1:
                 cout <<"<<< Enter the information of the person >>>" << endl << endl;
                 debug[n].create();
                 n+=1;
@@ -199,28 +242,42 @@ int main(){
                 n+=1;
 
                 break;
-        case 3:
+            case 3:
+                cout <<"<<< Enter the information of the patient >>>" << endl << endl;
+                debug3[n].createPatient();
+                n+=1;
+
+                break;
+            case 4:
+                cout <<"<<< Enter the information of the patient >>>" << endl << endl;
+                debug4[n].insert();
+                n+=1;
+
+                break;
+            case 5:
                 //will print all of the inputted people
                 cout <<"<<< Inventory of people >>>" << endl << endl;
                 cout << "Total people: " << n << endl << endl;
 
                 for(int j=0;j<n;j++){
-                    cout << "Patient number " << j+1 << endl;
-                    debug[j].dispInfo();
+                    cout << "### PATIENT NUMBER " << j+1<<" ###" << endl << endl;
+                    debug3[j].dispInfo();
 
                 }
 
                 cout << endl;
                 break;
-        default:
+            default:
                 cout << "Please enter either 1,2 or 3" << endl;
                 break;
 
         }
         cout <<endl;
 
-    }while(i!=3);
+    }while(i!=6);
     delete [] debug;
+    delete [] debug2;
+    delete [] debug3;
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END DEBUGGING @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ COMMENT ENDS HERE
 

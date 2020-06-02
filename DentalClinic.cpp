@@ -1,3 +1,4 @@
+//SECTIONS/COMMENTS MARKED WITH ** (DOUBLE STAR) NEEDS UPDATE/IMPROVEMENTS
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -37,9 +38,9 @@ public:
         return 1;
 
     }
-//Update person's info
+//**Update person's info
     bool update();
-    
+
 //View person's info
     void dispInfo(){
         cout << "Name : " << name << endl;
@@ -50,10 +51,61 @@ public:
     }
 };
 
-class Patient 
+//Nurse will do the screening before the patient is treated by dentist
+class Screening{
+private:
+    float temp;
+    string currentIllness;
+public:
+    Screening();
+
+    void inputScreen(){
+        cout << "Enter the patient's temperature : " ;
+        cin >> temp;
+        cout << "Enter the patient's current symptoms related to COVID-19 (if any) : ";
+        getline(cin, currentIllness);
+    }
+    bool checkTemp(){
+        if(this->temp >37.5){
+            cout << "Fever detected. Appointment will be declined. Thank you for coming and stay healthy" << endl;
+            return 1;
+        }
+        else{
+            cout << "No fever detected. Patient's Appointment accepted. Please wait for your turn." << endl;
+            return 0;
+        }
+    }
 
 
-//DEBUG MENU TEST
+};
+
+//**
+class MedHistory{
+private:
+
+public:
+
+};
+
+class Patient : public Person{
+private:
+
+public:
+};
+
+class Staff : public Person{
+
+};
+
+class Dentist : public Staff{
+
+};
+
+class Nurse : public Staff{
+
+};
+
+//DEBUG MENU TEST (DESIGN A PROPER ONE LATER)
 void debugMenu(){
     cout<< "=====MENU=====" << endl
         << "1. Add a person" << endl

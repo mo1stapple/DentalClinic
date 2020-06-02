@@ -6,9 +6,10 @@ Covid-19.
 ################### TO-DO LISTS ###################
 
 1. Create input.txt (list o) **
-   -5 nurse
-   -2 dentist
-   -5 past patients (mix decline and accepted appointments)
+
+-5 nurse
+-2 dentist
+-5 past patients (mix decline and accepted appointments)
 
 2. Create output.txt (storing previous session's info) **
 3. Put class definitions on top of the program

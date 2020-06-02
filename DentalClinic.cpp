@@ -82,8 +82,21 @@ public:
 //**
 class MedHistory{
 private:
-
+    string ongoingMed,previousVisit,famMedHist;
 public:
+    MedHistory(string ongoingMed="", string previousVisit="",string famMedHist=""){
+
+    }
+    bool insert(){
+        cout << "Ongoing medications : ";
+        getline(cin,ongoingMed);
+        cout << "Previous visit here (date) : ";
+        getline(cin, previousVisit);
+        cout << "Family medical history : ";
+        getline(cin, famMedHist);
+
+        return 1;
+    }
 
 };
 
@@ -94,7 +107,25 @@ public:
 };
 
 class Staff : public Person{
+protected:
+    char staffID[20];
+    string role, employmentType;
+    int salary;
+public:
+    // Staff(char s,string r ,string e, int sa)
+    bool createStaff(){
+        create();
+        cout << "Enter staff ID : " ;
+        cin >> staffID;
+        cout << "Enter staff role : ";
+        getline(cin, role);
+        cout << "Enter staff employment type";
+        getline(cin, employmentType);
+        cout << "Enter staff salary per month" ;
+        cin >> salary;
 
+        return 1;
+    }
 };
 
 class Dentist : public Staff{
@@ -105,12 +136,34 @@ class Nurse : public Staff{
 
 };
 
+class Treatment{
+private:
+    string medicine,symptoms,notes,date;
+
+public:
+    bool setTreatment(){
+        cout << "Enter the patient's type of medicine : ";
+        getline(cin, medicine);
+        cout << "Enter the patient's symptoms : ";
+        getline(cin, symptoms);
+        cout << "Enter additional notes/instructions : ";
+        getline(cin, notes);
+
+        return 1;
+    }
+
+};
+
+class Appointment{
+
+};
+
 //DEBUG MENU TEST (DESIGN A PROPER ONE LATER)
 void debugMenu(){
     cout<< "=====MENU=====" << endl
         << "1. Add a person" << endl
-        << "2. Display people" << endl
-        << "3. Exit" << endl;
+        << "2. Add staff" << endl
+        << "3. View person" << endl;
     cout << endl << "Choose an operation => ";
 }
 
@@ -118,10 +171,14 @@ int main(){
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  DEBUGGING SECTION @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ COMMENT STARTS HERE
 
+
     Person *debug;
+    Staff *debug2;
     int i=0,n=1;
 
     debug = new Person[MAX];
+    debug2 = new Staff[MAX];
+
 
     //TESTING THE RECORD SAVING FUNCTION
     do{
@@ -136,7 +193,13 @@ int main(){
                 n+=1;
 
                 break;
-        case 2:
+            case 2:
+                cout <<"<<< Enter the information of the staff >>>" << endl << endl;
+                debug2[n].createStaff();
+                n+=1;
+
+                break;
+        case 3:
                 //will print all of the inputted people
                 cout <<"<<< Inventory of people >>>" << endl << endl;
                 cout << "Total people: " << n << endl << endl;
@@ -157,7 +220,6 @@ int main(){
         cout <<endl;
 
     }while(i!=3);
-    // ship[0].print();
     delete [] debug;
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END DEBUGGING @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ COMMENT ENDS HERE

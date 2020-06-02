@@ -16,9 +16,9 @@ Covid-19.
 
 
 === MENU ====
--Add new patient
--Update patient record
--View schedule (appointment dates)
--View patient details
--View staff details
--Exit 
+1. Add new patient
+2. Update patient record
+3. View schedule (appointment dates)
+4. View patient details
+5. View staff details
+6. Exit 

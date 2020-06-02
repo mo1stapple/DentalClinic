@@ -138,16 +138,98 @@ public:
 };
 
 class Staff : public Person{
+	private:
+		int staffID = 0;
+		string role;
+		double salary;
+		string employmentType;
+		
+	public:
+		
+		void counter(){
+			static int count = 0;
+			count ++;
+			
+			staffID = count;
+		}
+		
+		// Staff constructor
+		Staff(string r ="", double s=0, string et=""){
+			role = r;
+			salary = s;
+			employmentType = et;
+		}
+		
+		//Create staff
+		bool create(){
+			Person::create();
+			cin.ignore();
+			cout << "Role :" << endl;
+			getline(cin, role);
+			cout << "Salary :" << endl;
+			cin >> salary;
+			cout << "Employment Type :" << endl;
+			getline(cin, employmentType);
+		
+			counter(); //update staffID
+			return 1;
+		}
 
 };
 
 class Dentist : public Staff{
+	
+	private:
+		
+	public :
+		bool approveAppoint(){
+			
+		}
 
 };
 
 class Nurse : public Staff{
+	
+	private:
+		//Appointment * app;
+	
 
+	public:
+		
 };
+
+class Treatment{
+	
+	private :
+		string med;
+		string symp;
+		string note;
+		string date;
+	
+	public :
+		void set_Drug(){
+			cin.ignore();
+			cout << "Medicine : ";
+			getline(cin, med);
+			cout << "Symptoms : ";
+			getline(cin, symp);
+			cout << "Note     : ";
+			getline(cin, note);
+			cout << "Date     : ";
+			getline(cin, date);
+		}	
+			
+	friend ostream &operator<<(ostream &strm, Treatment obj);
+};
+
+ostream &operator<<(ostream &strm, Treatment obj){
+	
+		strm << "Medicine : " << obj.med << endl;
+		strm << "Symptoms : " << obj.symp << endl;
+		strm << "Notes    : " << obj.note << endl;
+		strm << "Date     : " << obj.date << endl;
+		return strm;
+	}
 
 //DEBUG MENU TEST (DESIGN A PROPER ONE LATER)
 void debugMenu(){

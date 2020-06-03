@@ -5,7 +5,21 @@
 
 using namespace std;
 
-const int MAX = 1000;
+const int MAX = 100;
+const int MAXDATE = 50;
+
+string availableTime[MAXDATE]={  "10/06/2020 - 9:00 A.M", "12/06/2020 - 9:00 A.M", "15/06/2020 - 9:00 A.M", "18/06/2020 - 9:00 A.M", "19/06/2020 - 9:00 A.M",
+                    "22/06/2020 - 9:00 A.M", "23/06/2020 - 9:00 A.M", "26/06/2020 - 9:00 A.M", "01/07/2020 - 9:00 A.M", "14/07/2020 - 9:00 A.M",
+                    "22/07/2020 - 9:00 A.M", "28/07/2020 - 9:00 A.M", "04/08/2020 - 9:00 A.M", "28/08/2020 - 9:00 A.M", "31/08/2020 - 9:00 A.M",
+                    "09/09/2020 - 9:00 A.M", "16/09/2020 - 9:00 A.M",  "29/10/2020 - 9:00 A.M","17/11/2020 - 9:00 A.M", "18/11/2020 - 9:00 A.M",
+                    "26/11/2020 - 9:00 A.M","14/12/2020 - 9:00 A.M","17/12/2020 - 9:00 A.M","21/12/2020 - 9:00 A.M","30/12/2020 - 9:00 A.M",
+                    "10/06/2020 - 2:00 P.M","12/06/2020 - 2:00 P.M","15/06/2020 - 2:00 P.M","18/06/2020 - 2:00 P.M","19/06/2020 - 2:00 P.M",
+                    "22/06/2020 - 2:00 P.M","23/06/2020 - 2:00 P.M","26/06/2020 - 2:00 P.M","01/07/2020 - 2:00 P.M","14/07/2020 - 2:00 P.M",
+                    "22/07/2020 - 2:00 P.M","28/07/2020 - 2:00 P.M","04/08/2020 - 2:00 P.M","28/08/2020 - 2:00 P.M","31/08/2020 - 2:00 P.M",
+                    "09/09/2020 - 2:00 P.M","16/09/2020 - 2:00 P.M","29/10/2020 - 2:00 P.M","17/11/2020 - 2:00 P.M","18/11/2020 - 2:00 P.M",
+                    "26/11/2020 - 2:00 P.M","14/12/2020 - 2:00 P.M","17/12/2020 - 2:00 P.M","21/12/2020 - 2:00 P.M","30/12/2020 - 2:00 P.M"};
+
+string appDate[MAXDATE];
 
 //##################### CLASS DEFINITIONS #########################
 
@@ -25,7 +39,7 @@ public:
 
 //Create new person
     bool create(){
-        cin.ignore();
+        // cin.ignore();
         cout << "Name : " ;
         getline(cin,name);
         cout << "Age : ";
@@ -66,26 +80,37 @@ private:
     float temp;
     string currentIllness;
 public:
-    Screening(){}
+    Screening(){
+        temp = NULL;
+        currentIllness ="NOT YET SCREENED";
+    }
     void setScreening(float temp, string currentIllness){
         this->temp = temp;
         this->currentIllness = currentIllness;
     }
-    void insert(){
+    bool insert(){
         cout << "Enter the patient's temperature : " ;
         cin >> temp;
         cin.ignore();
         cout << "Enter the patient's current symptoms related to COVID-19 (if any) : ";
         getline(cin, currentIllness);
-    }
-    bool checkTemp(){
-        if(this->temp >37.5){
-            cout << "Fever detected. Appointment will be declined. Thank you for coming and stay healthy" << endl;
+
+        if(checkTemp())
             return 1;
-        }
-        else{
-            cout << "No fever detected. Patient's Appointment accepted. Please wait for your turn." << endl;
+        else
             return 0;
+
+
+    }
+    //This condition will determine whether the patient will be accepted or not
+    bool checkTemp(){
+        if(temp >37.5){
+            cout <<endl<< "Fever detected. Appointment will be declined. Thank you for coming and stay healthy. \n" << endl;
+            return 0;
+        }
+        else if(this->temp>30 && this->temp<37.5){
+            cout <<endl<< "No fever detected. Patient's Appointment accepted. Please wait for your turn. \n" << endl;
+            return 1;
         }
     }
     void dispScreeningResults(){
@@ -128,9 +153,20 @@ class Treatment{
 private:
     string medicine, diagnosis, note, date;
     string dentistname;
-    // Dentist *dentist;
-    // Nurse *nurse;
+    Screening checkScreening;
 public:
+    Treatment(){
+        if(checkScreening.checkTemp()){
+            cout << "test";
+        }
+        else{
+            medicine = "NOT YET TREATED";
+            diagnosis = "NOT YET TREATED";
+            note ="NOT YET TREATED";
+            date = "NOT YET TREATED";
+            dentistname ="NOT YET TREATED";
+        }
+    }
     bool insert(){
         cout << "Enter the diagnosis of the patient : ";
         getline(cin, diagnosis);
@@ -157,51 +193,6 @@ public:
 
 };
 
-class Patient : public Person{
-private:
-    MedHistory medHist;
-    Screening screeningResults;
-    // Appointment appTime;
-    Treatment *treatmentResults;
-    string time;
-public:
-    Patient(){
-        treatmentResults = new Treatment;
-    }
-    bool createPatient(){
-        Person::create();
-        medHist.insert(); //Adds medical history from MedHistory class
-
-        return 1;
-    }
-
-    //Adds screening results from the Screening class
-    void addscreeningResults(){
-        screeningResults.insert();
-        // screeningResults->setScreening()
-    }
-
-    //Adds treatment results after getting treatment from doctor
-    void addtreatmentResults(){
-        treatmentResults->insert();
-    }
-
-    void dispInfo(){
-        Person::dispInfo();
-
-        cout << "::: MEDICAL HISTORY OF " << getName() <<" :::"<<endl << endl;
-        medHist.dispMedHistory();
-
-        cout << "::: SCREENING RESULTS OF " << getName() <<  " :::"<< endl << endl;
-        screeningResults.dispScreeningResults();
-        screeningResults.checkTemp();
-
-        cout << "::: TREATMENT RESULTS OF " << getName() <<  " :::"<< endl << endl;
-        treatmentResults->dispTreatment();
-        cout << endl << "-----------------------------" << endl;
-
-    }
-};
 
 class Staff : public Person{
 protected:
@@ -209,7 +200,7 @@ protected:
     string role, employmentType;
     int salary;
 public:
-    // Staff(char s,string r ,string e, int sa)
+
     bool createStaff(){
         create();
         cout << "Enter staff ID : " ;
@@ -238,30 +229,186 @@ public:
 
 
 class Appointment{
-public:
-    string appDate[MAX],basicSymptoms,scheduledTime;
 private:
-    // bool checkDate(string t){
-    //     for(int i = 0;i<MAX<i++){
-    //         if(temp == )
-    //     }
-    // }
+    string basicSymptoms,scheduledTime;
 
-    // bool proposedDate(){
-    //     string temp;
-    //     cout << "Enter the proposed date for appointment. Use the format DD/MM/YYYY: ";
-    //     cin >> temp;
-    //     checkDate(temp);
-    //     //Check if the date is empty.
+public:
+    static int count;
+    // int currentCount;
+    Appointment(){
 
-    //     return 1;
-    // }
+    }
+
+    void drawSchedule(){
+        for(int i=0; i<MAXDATE; i++){
+            if(i == 0)
+                cout <<endl<< "------------------9:00 A.M------------------" <<endl << endl;
+            if(i ==25)
+                cout <<endl<< "------------------2:00 P.M------------------" <<endl << endl;
+            cout << availableTime[i] << " -> " << i << endl;
+        }
+    }
+
+    bool checkDate(string chosenTime,int chosenNum){
+        //Traverses through all of the elements in the array and check for same date
+        for(int i = 0;i<MAXDATE;i++){
+            if(chosenTime!="###### FULL ######" && i==count){
+                appDate[count] = chosenTime;
+                availableTime[chosenNum] = "###### FULL ######";
+                ++count;
+                return 1;
+            }
+            else if(i!=count){
+
+                continue;
+            }
+            else
+                return 0;
+        }
+    }
 
 
+    bool proposedDate(){
+        int temp;
+        string tempdate;
 
+
+        drawSchedule();
+
+        do{
+            cout <<endl<< "Enter the proposed date for appointment. Choose one of these dates by putting the number 0 to 49 : " ;
+            cin >> temp;
+            cout << endl;
+            tempdate = availableTime[temp];
+            if(checkDate(tempdate,temp)){
+                cin.ignore();
+                cout <<"The date is accepted. Please enter the basic symptoms about the patient : ";
+                getline(cin, basicSymptoms);
+                break;
+            }
+            else{
+                cout << "The date is full!. Please choose another date." << endl;
+                continue;
+            }
+        }while(temp<0 || temp>49);
+        // drawSchedule(); //DEBUG
+
+        // if(checkDate(tempdate,temp)){
+        //     cout <<"The date is accepted. Please enter the basic information about the patient .";
+        // }
+        // else{
+        //     cout << "The date is full!. Please choose another date." << endl;
+        // }
+        //DEBUG DELETE LATER
+        // cout << currentCount;
+
+        // for(int i = 0;i<5;i++){
+        //     cout << appDate[i] << endl;
+        // }
+
+        //Check if the date is empty.
+
+        return 1;
+    }
+
+    void dispAppointmentTimes(){
+
+
+    }
 
 
 };
+
+//Initialize static int in Appointment class
+int Appointment::count = 0;
+
+class Patient : public Person{
+private:
+    MedHistory medHist;
+    Screening screeningResults;
+    Appointment appTime;
+    Treatment *treatmentResults;
+    string time;
+public:
+    Patient(){
+        treatmentResults = new Treatment;
+    }
+    bool createPatient(){
+        Person::create();
+        medHist.insert(); //Adds medical history from MedHistory class
+
+        return 1;
+    }
+    void addAppointmentTime(){
+        appTime.proposedDate();
+    }
+
+    //Adds screening results from the Screening class
+    bool addscreeningResults(){
+        screeningResults.insert();
+    }
+
+    //Adds treatment results after getting treatment from doctor
+    void addtreatmentResults(){
+        treatmentResults->insert();
+    }
+
+    void dispInfo(){
+        Person::dispInfo();
+
+        cout << "::: MEDICAL HISTORY OF " << getName() <<" :::"<<endl << endl;
+        medHist.dispMedHistory();
+
+        cout << "::: SCREENING RESULTS OF " << getName() <<  " :::"<< endl << endl;
+        screeningResults.dispScreeningResults();
+        screeningResults.checkTemp();
+
+        cout << "::: TREATMENT RESULTS OF " << getName() <<  " :::"<< endl << endl;
+        treatmentResults->dispTreatment();
+        cout << endl << "-----------------------------" << endl;
+
+    }
+
+};
+
+
+void welcomeInterface(){
+
+    cout <<"\n\n\n\t\t\t\t" << "---------------------------------------------------------" <<endl;
+    cout << "\t\t\t\t" << "|" << "\t\t\t\t\t\t\t" <<"|"<<"\n";
+    cout << "\t\t\t\t" << "|" << "\t\t\t\t\t\t\t" <<"|"<<"\n";
+    cout << "\t\t\t\t" << "|" << "\t\t\t\t\t\t\t" <<"|"<<"\n";
+    cout << "\t\t\t\t" << "|" << "\t\t\t\t\t\t\t" <<"|"<<"\n";
+    cout << "\t\t\t\t" << "|" << "\tWELCOME TO DENTAL CLINIC MANAGEMENT SYSTEM\t" <<"|"<<"\n";
+    cout << "\t\t\t\t" << "|" << "\t\t\t\t\t\t\t" <<"|"<<"\n";
+    cout << "\t\t\t\t" << "|" << "\t\t\t\t\t\t\t" <<"|"<<"\n";
+    cout << "\t\t\t\t" << "|" << "\t\t\t\t\t\t\t" <<"|"<<"\n";
+    cout << "\t\t\t\t" << "|" << "\t\t\t\t\tBY: TEAM CORONA\t" <<"|"<<"\n";
+
+
+    cout <<"\t\t\t\t" << "---------------------------------------------------------" << "\n\n\n\n\n\n\n\n\n";
+    system("pause");
+    system("cls");
+}
+
+void drawMenu(){
+
+    // cout <<"\n\n\n\t\t" << "DENTAL CLINIC MANAGEMENT SYSTEM" <<endl;
+    cout <<"\n\n\n\n\t\t\t\t\t" <<"     DENTAL CLINIC MANAGEMENT SYSTEM"  <<endl;
+    cout <<"\n\t\t\t\t" <<"---------------------------------------------------------" <<endl;
+    cout << "\t\t\t\t" << "|" << "                                                       " <<"|\n";
+    cout << "\t\t\t\t" << "|" << "  1. Add a patient                                     " <<"|\n";
+    cout << "\t\t\t\t" << "|" << "  2. Update patient record                             " <<"|\n";
+    cout << "\t\t\t\t" << "|" << "  3. View patient record                               " <<"|\n";
+    cout << "\t\t\t\t" << "|" << "  4. View staff record                                 " <<"|\n";
+    cout << "\t\t\t\t" << "|" << "  5. View appointed dates                              " <<"|\n";
+    cout << "\t\t\t\t" << "|" << "  6. Exit                                              " <<"|\n";
+    cout << "\t\t\t\t" << "|" << "                                                       " <<"|\n";
+    cout << "\t\t\t\t" << "|" << "                                                       " <<"|\n";
+    cout << "\t\t\t\t" << "---------------------------------------------------------" <<"\n\n\n\n\n\n\n";
+    cout << "Choose an operation => " ;
+
+}
 
 //DEBUG MENU TEST (DESIGN A PROPER ONE LATER)
 void debugMenu(){
@@ -270,96 +417,180 @@ void debugMenu(){
         << "2. Add staff" << endl
          << "3. Add a patient <--- CHOOSE ME PLS" << endl
          << "4. Add a medhistory" << endl
-        << "5. View person" << endl;
+        << "5. Add dates" << endl;
     cout << endl << "Choose an operation => ";
 }
 
 int main(){
 
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  DEBUGGING SECTION @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ COMMENT STARTS HERE
+    Appointment *appoint;
+    Patient *patient;
+    appoint = new Appointment[MAX];
+    patient = new Patient[MAX];
 
+    int chooseMenu=0, n=0,choosePatient=0;
 
-    Person *debug;
-    Staff *debug2;
-    Patient *debug3;
-    MedHistory *debug4;
-    int i=0,n=0;
-
-    debug = new Person[MAX];
-    debug2 = new Staff[MAX];
-    debug3 = new Patient[MAX];
-    debug4 = new MedHistory[MAX];
-
-
-    //TESTING THE RECORD SAVING FUNCTION
+    welcomeInterface();
+    menu:
     do{
-        debugMenu();
-        cin >> i;
-        cout << endl;
+        drawMenu();
+        cin >> chooseMenu;
         system("cls");
-
-        switch(i){
+        switch(chooseMenu){
             case 1:
-                cout <<"<<< Enter the information of the person >>>" << endl << endl;
-                debug[n].create();
+                patient[n].addAppointmentTime();
+                cout << "\n <<< ENTER BASIC INFORMATION AND MEDICAL HISTORY OF PATIENT >>> \n\n";
+                patient[n].createPatient();
+                cout << "\n @@@ Patient's information has been added to the database. @@@\n @@@ Nurses will do the screening on the appointed day. @@@ \n\n ";
+                system("pause");
+                system("cls");
                 n+=1;
-
                 break;
             case 2:
-                cout <<"<<< Enter the information of the staff >>>" << endl << endl;
-                debug2[n].createStaff();
-                n+=1;
+                for(int j=0;j<n;j++){
+                    cout << "### PATIENT NUMBER " << j+1<<" ###" << endl << endl;
+                    patient[j].dispInfo();
+                }
+                cout <<"\n <<< CHOOSE WHICH PATIENT TO UPDATE BY ENTERING PATIENTS NUMBER (1,2,5,ETC) >>> \n\n";
+                cin >> choosePatient;
+                cout << "\n <<< ENTER THE SCREENING RESULTS OF PATIENT >>> \n\n";
+                patient[choosePatient-1].addscreeningResults();
+                cout << "\n <<< ENTER THE TREATMENT RESULTS OF PATIENT >>> \n\n";
+                patient[choosePatient-1].addtreatmentResults();
+                system("pause");
+                system("cls");
 
                 break;
             case 3:
-
-                cout <<endl<<"<<< Enter the information of the patient >>>" << endl << endl;
-                debug3[n].createPatient();
-                cout <<endl << "<< Enter the screening results of the patient >>" << endl << endl;
-                debug3[n].addscreeningResults();
-                cout  <<endl<< "<< Enter the treatment results of the patient >> " << endl << endl;
-                debug3[n].addtreatmentResults();
-                n+=1;
-
-                system("pause");
-                system("cls");
-
-                break;
-            case 4:
-                cout <<"<<< Enter the information of the patient >>>" << endl << endl;
-                debug4[n].insert();
-                n+=1;
-
-                break;
-            case 5:
-                //will print all of the inputted people
-                cout <<"<<< Inventory of people >>>" << endl << endl;
-                cout << "Total people: " << n << endl << endl;
-
+                cout <<"<<< LIST OF PATIENT >>>" << endl << endl;
+                cout << "TOTAL PATIENT: " << n << endl << endl;
                 for(int j=0;j<n;j++){
                     cout << "### PATIENT NUMBER " << j+1<<" ###" << endl << endl;
-                    debug3[j].dispInfo();
-
+                    patient[j].dispInfo();
                 }
-
                 cout << endl;
                 system("pause");
                 system("cls");
-                
-                break;
-            default:
-                cout << "Please enter either 1,2 or 3" << endl;
-                break;
 
+                break;
+            case 5:
+                cout <<"<<< LIST OF APPOINTED DATES >>> \n\n";
+                for(int i=0;i<Appointment::count;i++){
+                    cout << appDate[i] << endl;
+                }
+                system("pause");
+                system("cls");
+                break;
         }
-        cout <<endl;
 
-    }while(i!=6);
-    delete [] debug;
-    delete [] debug2;
-    delete [] debug3;
+    }while(chooseMenu!=9);
+
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  DEBUGGING SECTION @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ COMMENT STARTS HERE
+
+    // Appointment *debug5;
+
+    // Person *debug;
+    // Staff *debug2;
+    // Patient *debug3;
+    // MedHistory *debug4;
+    // int i=0,n=0;
+
+    // debug = new Person[MAX];
+    // debug2 = new Staff[MAX];
+    // debug3 = new Patient[MAX];
+    // debug4 = new MedHistory[MAX];
+
+    // debug5 = new Appointment[MAX];
+
+    // welcomeInterface();
+    // // drawMenu();
+    // //TESTING THE RECORD SAVING FUNCTION
+    // do{
+    //     menu:
+    //     debugMenu();
+    //     cin >> i;
+    //     cout << endl;
+    //     system("cls");
+
+    //     switch(i){
+    //         case 1:
+    //             cout <<"<<< Enter the information of the person >>>" << endl << endl;
+    //             debug[n].create();
+    //             n+=1;
+
+    //             break;
+    //         case 2:
+    //             cout <<"<<< Enter the information of the staff >>>" << endl << endl;
+    //             debug2[n].createStaff();
+    //             n+=1;
+
+    //             break;
+    //         case 3:
+    //             cout <<endl<<"<<< Enter the proposed date of the patient >>>" << endl << endl;
+    //             debug3[n].addAppointmentTime();
+    //             cout <<endl<<"<<< Enter the information of the patient >>>" << endl << endl;
+    //             debug3[n].createPatient();
+    //             goto menu;
+    //             cout <<endl << "<< Enter the screening results of the patient >>" << endl << endl;
+    //             if(debug3[n].addscreeningResults()){
+    //                 cout  <<endl<< "<< Enter the treatment results of the patient >> " << endl << endl;
+    //                 debug3[n].addtreatmentResults();
+    //             }
+
+    //             else{
+    //                 cout << "Treatment status : Rejected" << endl;
+    //             }
+    //             n+=1;
+
+    //             system("pause");
+    //             system("cls");
+
+    //             break;
+    //         case 4:
+    //             cout <<"<<< Enter the information of the patient >>>" << endl << endl;
+    //             debug4[n].insert();
+    //             n+=1;
+
+    //             break;
+    //         case 5:
+    //             cout <<"<<< Enter the information of the patient >>>" << endl << endl;
+    //             debug5[n].proposedDate();
+    //             // debug5[n].dispAppointmentTimes();
+    //             n+=1;
+    //             system("pause");
+
+    //             break;
+    //         case 6:
+    //             //will print all of the inputted people
+    //             cout <<"<<< Inventory of people >>>" << endl << endl;
+    //             cout << "Total people: " << n << endl << endl;
+
+    //             for(int j=0;j<n;j++){
+    //                 cout << "### PATIENT NUMBER " << j+1<<" ###" << endl << endl;
+    //                 debug3[j].dispInfo();
+
+    //             }
+
+    //             cout << endl;
+    //             system("pause");
+    //             system("cls");
+
+    //             break;
+    //         default:
+    //             cout << "Please enter either 1,2 or 3" << endl;
+    //             break;
+
+    //     }
+    //     cout <<endl;
+
+    // }while(i!=7);
+    // delete [] debug;
+    // delete [] debug2;
+    // delete [] debug3;
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ END DEBUGGING @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ COMMENT ENDS HERE
+
+
 
 
 }

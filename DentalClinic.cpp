@@ -80,7 +80,20 @@ public:
 
 //Create new person
 //Polymorph 1
-    virtual bool create()=0;
+    bool create(){
+    	cout << "Name : " ;
+        getline(cin,name);
+        cout << "Age : ";
+        cin >> age;
+        cin.ignore();
+        cout << "Gender : ";
+        getline(cin, gender);
+        cout << "Date of Birth : ";
+        getline(cin,dateofBirth);
+        cout << "Phone Number : ";
+        getline(cin,phoneNo);
+    	
+	};
         // cin.ignore();
 
 
@@ -235,7 +248,7 @@ protected:
     int salary;
 public:
 
-    bool create(){
+    virtual bool create(){
 
         //polymorph create() method
         cout << "Name : " ;
@@ -465,17 +478,7 @@ public:
     }
     //polymorph
     bool create(){
-        cout << "Name : " ;
-        getline(cin,name);
-        cout << "Age : ";
-        cin >> age;
-        cin.ignore();
-        cout << "Gender : ";
-        getline(cin, gender);
-        cout << "Date of Birth : ";
-        getline(cin,dateofBirth);
-        cout << "Phone Number : ";
-        getline(cin,phoneNo);
+        Person::create();//dah
 
         medHist.insert(); //Adds medical history from MedHistory class
 

@@ -261,6 +261,21 @@ public:
 
         return 1;
     }
+    
+	 friend ostream &operator<<(ostream &strm, Staff &obj){
+        strm << "::: STAFF INFORMATION :::" << endl << endl;
+        strm << "Name 		: " << obj.name << endl;
+        strm << "Age 		: "<<obj.age << endl;
+        strm << "Gender 		: "<<obj.gender<< endl;
+        strm << "Date of Birth 	: "<<obj.dateofBirth<< endl;
+        strm << "Phone Number 	: "<<obj.phoneNo << endl;
+        strm << "ID 		: "<< obj.staffID << endl;
+        strm << "Employment Type : "<<obj.employmentType << endl;
+        strm << "Salary 		: RM"<<obj.salary << endl << endl;
+        
+        return strm;
+    }
+    
 };
 
 class Dentist : public Staff{
@@ -268,7 +283,17 @@ class Dentist : public Staff{
 private:
     string expertise;
 public:
-    Dentist();
+    Dentist(string x, int y, string z, string xy, string xz, string yz, string yx, string xx, int yy ){
+    	this->name = x;
+    	this->age = y;
+    	this->gender = z;
+    	this->dateofBirth = xy;
+    	this->phoneNo = xz;
+    	this->staffID = yz;
+    	this->expertise = yx;
+    	this->employmentType = xx;
+    	this->salary = yy;
+	};
     //polymorph
     bool create(){
      cout << "Name of Dentist: " ;
@@ -511,16 +536,10 @@ int main(){
 
     //Nak sekalikan Dentist ngan Nurse bawah satu ptr. Tapi xleh create object Person.. ptr je.
     //kene disable baru leh run :v
-    // Person *stf;
-
-    // Dentist amir;
-    // amir.create();
-
-    // Nurse farah, hana;
-    // farah.create();
-    // hana.create();
-
-    // Person staff[3] = { &amir, &farah, &hana };
+  
+    Dentist a("Mr.Amir",20,"M", "28/7", "012-6805527", "001", "Teeth", "Fulltime", 2300);
+    Dentist b("Dr.Anis", 30, "F", "30/6", "012-9999999", "002", "Lips", "Parttime", 1000);
+	Staff *stf[2] = { &a, &b };
 
 
 
@@ -572,9 +591,9 @@ int main(){
             case 4:
                 cout <<"<<< LIST OF STAFF >>>" << endl << endl;
                 cout <<"TOTAL STAFF: 3"<< endl << endl;
-                for(int j=0; j<3; j++){
+                for(int j=0; j<2; j++){
                     cout << "### STAFF NUMBER " << j+1 << " ###" << endl << endl;
-                    // cout << staff[j]; // do overload 1) disable jap kasi boleh run fix. 2) kau ade overload ke staff punye << ??
+                    cout << *stf[j]; // do overload 1) disable jap kasi boleh run fix. 2) kau ade overload ke staff punye << ??
                 }
                 cout << endl;
                 system("pause");

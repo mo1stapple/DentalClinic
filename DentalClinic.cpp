@@ -77,8 +77,8 @@ public:
     string phoneNo;
     int age;
 
-//Create new person
-//Polymorph 1
+    //Create new person
+    //Polymorph 1
     bool create() {
         cout << "Name : ";
         getline(cin, name);
@@ -97,7 +97,7 @@ public:
     };
 
 
-//Get person name
+    //Get person name
     string getName() {
         return name;
     }
@@ -115,7 +115,7 @@ public:
 
 class Staff : public Person {
 protected:
-	friend class Treatment;
+    friend class Treatment;
     string staffID;
     string role, employmentType;
     int salary;
@@ -147,11 +147,11 @@ public:
 
         return 1;
     }
-	
-	virtual string displayInfo(){
-	
-	}
-	
+
+    virtual void displayInfo() {
+
+    }
+
     friend ostream& operator<<(ostream& strm, Staff& obj) {
         strm << "::: STAFF INFORMATION :::" << endl << endl;
         strm << "Name       : " << obj.name << endl;
@@ -162,7 +162,7 @@ public:
         strm << "ID         : " << obj.staffID << endl;
         strm << "Employment Type : " << obj.employmentType << endl;
         strm << "Salary         : RM" << obj.salary << endl << endl;
-		
+
         return strm;
     }
 
@@ -172,10 +172,10 @@ class Dentist : public Staff {
 
 private:
     string expertise;
-    
-   
+
+
 public:
-	int k=0;
+    int k = 0;
     Dentist(string x, int y, string z, string xy, string xz, string yz, string yx, string xx, int yy) {
         this->name = x;
         this->age = y;
@@ -212,18 +212,18 @@ public:
 
         return 1;
     }
-	
-	string displayInfo(){
-		cout << "No. of patients	: " << k << endl; 
-	}
-	
-	void chooseDoctor(){ // update no of patients
-		k+=1;
-	}
-	
-	//int getPatientNo(){ function doesn't gv right output, replaced with displayInfo() above
-	//	cout << k;
-	//}
+
+    void displayInfo() {
+        cout << "No. of patients    : " << k << endl;
+    }
+
+    void chooseDoctor() { // update no of patients
+        k += 1;
+    }
+
+    //int getPatientNo(){ function doesn't gv right output, replaced with displayInfo() above
+    //  cout << k;
+    //}
 };
 
 
@@ -255,11 +255,11 @@ public:
 
         return 1;
     }
-	
-	string displayInfo(){
-		cout << "Itadakimasu" << endl; 
-	}
-	
+
+    void displayInfo() {
+        cout << "Itadakimasu" << endl;
+    }
+
 };
 
 //Nurse will do the screening before the patient is treated by dentist
@@ -339,11 +339,11 @@ public:
 
 class Treatment {
 protected:
-	int doc;
+    int doc;
     string medicine, diagnosis, note, date;
     string dentistname;
     Screening checkScreening;
-   
+
 public:
 
     Treatment() {
@@ -353,7 +353,7 @@ public:
         date = "NOT YET TREATED";
         dentistname = "NOT YET TREATED";
     }
-    bool insert( Dentist &obj1, Dentist &obj2) {
+    bool insert(Dentist& obj1, Dentist& obj2) {
         cout << "Enter the diagnosis of the patient : ";
         getline(cin, diagnosis);
         cout << "Enter the prescribed medicine : ";
@@ -363,25 +363,27 @@ public:
         cout << "Enter any additional instructions/note : ";
         getline(cin, note);
         cout << "Treated by : " << endl; // choose dentist and will update dentist number of patients
-        cout << "1) Dr.Amir	" << endl
-			 << "2) Dr.Anis " << endl;
-       	cin >> doc;
-       	
-       	//do{
-       	if (doc==1){
-       		obj1.chooseDoctor();
-       		dentistname = "Dr. Amir";
-       	
-		   }
-		else if (doc==2){
-       		obj2.chooseDoctor();
-       		dentistname = "Dr. Anis";
-       		
-		   }
-		else{
-			cout << "Please choose either one or two!" << endl;
-		}
-		//} while ( doc < 1 || doc > 2);
+        cout << "1) Dr.Amir " << endl
+            << "2) Dr.Anis " << endl;
+        
+
+        do{
+        cin >> doc;
+        if (doc == 1) {
+            obj1.chooseDoctor();
+            dentistname = "Dr. Amir";
+            break;
+        }
+        else if (doc == 2) {
+            obj2.chooseDoctor();
+            dentistname = "Dr. Anis";
+            break;
+        }
+        else {
+            cout << "Please choose either one or two!" << endl;
+            
+        }
+        } while ( doc < 1 || doc > 2);
 
         return 1;
     }
@@ -427,6 +429,7 @@ public:
         for (int i = 0; i < MAXDATE; i++) {
             if (chosenTime != "###### FULL ######" && i == count) {
                 appDate[count] = chosenTime;
+                scheduledTime = chosenTime;
                 availableTime[chosenNum] = "###### FULL ######";
                 ++count;
                 return 1;
@@ -441,9 +444,10 @@ public:
     }
 
     //The first prompt that will appear when trying to add patient
-    bool proposedDate() {
+    void proposedDate() {
         int temp;
         string tempdate;
+        bool acceptDate;
 
         drawSchedule();
 
@@ -456,15 +460,21 @@ public:
                 cin.ignore();
                 cout << "The date is accepted. Please enter the basic symptoms about the patient : ";
                 getline(cin, basicSymptoms);
+                acceptDate = 1;
                 break;
             }
             else {
                 cout << "The date is full!. Please choose another date." << endl;
-                continue;
+                acceptDate = 0;
+                // continue;
             }
-        } while (temp < 0 || temp>49);
+        } while (temp < 0 || temp>49 || acceptDate == 0);
 
-        return 1;
+        
+    }
+
+    string getAppointmentDate() {
+        return scheduledTime;
     }
 
 };
@@ -506,7 +516,7 @@ public:
     }
 
     //Adds treatment results after getting treatment from doctor
-    void addtreatmentResults(Dentist &obj1, Dentist &obj2) { // receive Dentist obj
+    void addtreatmentResults(Dentist& obj1, Dentist& obj2) { // receive Dentist obj
         treatmentResults->insert(obj1, obj2);
     }
 
@@ -517,6 +527,9 @@ public:
         strm << "::: MEDICAL HISTORY OF " << obj.getName() << " :::" << endl << endl;
         strm << obj.medHist; //here VJ
 
+        strm << "::: APPOINTMENT DATE ::: \n\n";
+        strm << obj.appTime.getAppointmentDate() << endl << endl;
+
         strm << "::: SCREENING RESULTS OF " << obj.getName() << " :::" << endl << endl;
         obj.screeningResults.dispScreeningResults();
         obj.screeningResults.checkTemp();
@@ -526,8 +539,6 @@ public:
         strm << endl << "=======================================================================" << endl;
 
         return strm;
-
-
 
     }
 
@@ -565,17 +576,17 @@ int main() {
             break;
         case 2: //2. Update patient info
             for (int j = 0; j < n; j++) {
-                cout << "***************************** PATIENT NUMBER " << j+1<<" *****************************" << endl << endl;
+                cout << "### PATIENT NUMBER " << j + 1 << " ###" << endl << endl;
                 cout << patient[j];
             }
             cout << "\n <<< CHOOSE WHICH PATIENT TO UPDATE BY ENTERING PATIENTS NUMBER (1,2,5,ETC) >>> \n\n";
             cin >> choosePatient;
             cout << "\n <<< ENTER THE SCREENING RESULTS OF PATIENT >>> \n\n";
-            if(patient[choosePatient-1].addscreeningResults()){
+            if (patient[choosePatient - 1].addscreeningResults()) {
                 cout << "\n <<< ENTER THE TREATMENT RESULTS OF PATIENT >>> \n\n";
-                patient[choosePatient-1].addtreatmentResults(a, b); //send Dentist objects
+                patient[choosePatient - 1].addtreatmentResults(a, b); //send Dentist objects
             }
-            else{
+            else {
                 cout << "\n ********* PATIENT WILL BE ASKED TO SELF-QUARANTINE AT HOME ********** \n\n";
             }
             system("pause");
@@ -586,7 +597,7 @@ int main() {
             cout << "<<< LIST OF PATIENT >>>" << endl << endl;
             cout << "TOTAL PATIENT: " << n << endl << endl;
             for (int j = 0; j < n; j++) {
-                cout << "***************************** PATIENT NUMBER " << j+1<<" *****************************" << endl << endl;
+                cout << "### PATIENT NUMBER " << j + 1 << " ###" << endl << endl;
                 cout << patient[j];
             }
             cout << endl;
@@ -601,11 +612,11 @@ int main() {
                 cout << "### STAFF NUMBER " << j + 1 << " ###" << endl << endl;
                 cout << *stf[j];
                 stf[j]->displayInfo(); //when run only displays First Dentist info, return value 3221226356
-                
-                
+                cout << "\n============================================================\n";
+
             }
-            
-            
+
+
             cout << endl;
             system("pause");
             system("cls");
@@ -616,23 +627,24 @@ int main() {
             for (int i = 0; i < Appointment::count; i++) {
                 cout << appDate[i] << endl;
             }
+            cout << endl << endl;
             system("pause");
             system("cls");
             break;
         case 6: //6. Exit
-            cout <<"==== YOU HAVE CHOSEN TO EXIT THE PROGRAM THANK YOU ==== \n\n\n\n\n\n\n\n\n\n";
+            cout << "==== YOU HAVE CHOSEN TO EXIT THE PROGRAM THANK YOU ==== \n\n\n\n\n\n\n\n\n\n";
             system("pause");
             system("cls");
             break;
         default:
-            cout <<"PLEASE ENTER NUMBER 1 TO 6 ONLY \n\n";
+            cout << "PLEASE ENTER NUMBER 1 TO 6 ONLY \n\n";
             system("pause");
             system("cls");
             break;
         }
 
     } while (chooseMenu != 6);
-    delete [] patient;
-    delete [] stf;
+    delete[] patient;
+    delete[] stf;
 
 }

@@ -80,8 +80,24 @@ public:
     bool create() {
         cout << "Name : ";
         getline(cin, name);
+        
+        // exception handling
+        do{
         cout << "Age : ";
-        cin >> age;
+        while(!(cin >> age)){ //if user enters string instead of int for age
+        	string ageError2 ="Please enter a valid value!";
+        	throw ageError2;
+		}
+        try{ // if value entered by user for age is <= 0
+        	if (age <= 0){
+        		string ageError="Age must be greater than 0! Please re-enter age.";
+        		throw ageError;
+			}
+		}
+		catch (string msg){
+			cout << "Error : " << msg << endl;
+		}
+		} while (age < 0 || age == 0);
         cin.ignore();
         cout << "Gender : ";
         getline(cin, gender);
@@ -289,6 +305,16 @@ public:
     }
     //This condition will determine whether the patient will be accepted or not
     bool checkTemp() {
+    	try{ // second exception handling
+    		if ( temp <= 0){
+    			string invalidTemp = "Temperature entered is invalid!";
+				throw invalidTemp;
+			}	
+		}
+		catch ( string msg3){
+			cout << "Error: "<< msg3 << endl;
+		}
+		
         if (temp > 37.5) {
             cout << endl << "Fever detected. Appointment will be declined. Thank you for coming and stay healthy. \n" << endl;
             return 0;
@@ -297,6 +323,7 @@ public:
             cout << endl << "No fever detected. Patient's Appointment accepted. Please wait for your turn. \n" << endl;
             return 1;
         }
+        
     }
     void dispScreeningResults() {
         cout << "Patient's temperature : " << temp << endl

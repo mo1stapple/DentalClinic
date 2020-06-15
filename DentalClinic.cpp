@@ -63,7 +63,6 @@ void drawMenu() {
 
 }
 
-
 //############################################## CLASS DECLARATIONS ##################################################
 
 
@@ -78,7 +77,6 @@ public:
     int age;
 
     //Create new person
-    //Polymorph 1
     bool create() {
         cout << "Name : ";
         getline(cin, name);
@@ -116,52 +114,27 @@ public:
 class Staff : public Person {
 protected:
     friend class Treatment;
+    friend class Screening;
     string staffID;
     string role, employmentType;
     int salary;
 public:
 
-    virtual bool create() {
-
-        //polymorph create() method
-        cout << "Name : ";
-        getline(cin, name);
-        cout << "Age : ";
-        cin >> age;
-        cin.ignore();
-        cout << "Gender : ";
-        getline(cin, gender);
-        cout << "Date of Birth : ";
-        getline(cin, dateofBirth);
-        cout << "Phone Number : ";
-        getline(cin, phoneNo);
-
-        cout << "Enter staff ID : ";
-        getline(cin, staffID);
-        cout << "Enter staff role (Nurse or Doctor): ";
-        getline(cin, role);
-        cout << "Enter staff employment type";
-        getline(cin, employmentType);
-        cout << "Enter staff salary per month";
-        cin >> salary;
-
-        return 1;
-    }
-
+    virtual bool create() = 0;
     virtual void displayInfo() {
 
     }
 
     friend ostream& operator<<(ostream& strm, Staff& obj) {
         strm << "::: STAFF INFORMATION :::" << endl << endl;
-        strm << "Name       : " << obj.name << endl;
-        strm << "Age        : " << obj.age << endl;
-        strm << "Gender         : " << obj.gender << endl;
-        strm << "Date of Birth  : " << obj.dateofBirth << endl;
-        strm << "Phone Number   : " << obj.phoneNo << endl;
-        strm << "ID         : " << obj.staffID << endl;
+        strm << "Name       	: " << obj.name << endl;
+        strm << "Age        	: " << obj.age << endl;
+        strm << "Gender          : " << obj.gender << endl;
+        strm << "Date of Birth   : " << obj.dateofBirth << endl;
+        strm << "Phone Number    : " << obj.phoneNo << endl;
+        strm << "ID         	: " << obj.staffID << endl;
         strm << "Employment Type : " << obj.employmentType << endl;
-        strm << "Salary         : RM" << obj.salary << endl << endl;
+        strm << "Salary          : RM" << obj.salary << endl;
 
         return strm;
     }
@@ -176,7 +149,7 @@ private:
 
 public:
     int k = 0;
-    Dentist(string x, int y, string z, string xy, string xz, string yz, string yx, string xx, int yy) {
+    Dentist(string x="", int y=0, string z="", string xy="", string xz="", string yz="", string yx="", string xx="", int yy=0) {
         this->name = x;
         this->age = y;
         this->gender = z;
@@ -221,17 +194,31 @@ public:
         k += 1;
     }
 
-    //int getPatientNo(){ function doesn't gv right output, replaced with displayInfo() above
-    //  cout << k;
-    //}
+   
 };
 
 
 
 class Nurse : public Staff {
+
+private : 
+	string *screeningList;
+	int j = 1;
 public:
-    Nurse();
+	
+    Nurse(string x="", int y=0, string z="", string xy="", string xz="", string yz="", string xx="", int yy=0) {
+        this->name = x;
+        this->age = y;
+        this->gender = z;
+        this->dateofBirth = xy;
+        this->phoneNo = xz;
+        this->staffID = yz;
+       
+        this->employmentType = xx;
+        this->salary = yy;
+	}
     //polymorph
+    
     bool create() {
         cout << "Name of Nurse: ";
         getline(cin, name);
@@ -255,9 +242,18 @@ public:
 
         return 1;
     }
+    
+    void doScreening(string ptname=""){
+		screeningList = new string;
+		screeningList[j-1] = ptname;
+		j++;
+	}
 
     void displayInfo() {
-        cout << "Itadakimasu" << endl;
+        cout << "Patients screened :" << endl;
+        for (int i=0; i<j; i++){
+        	cout << i+1 << ". " << &screeningList[i] << endl; //cane nak tunjuk name patient tu?
+		}
     }
 
 };
@@ -272,23 +268,24 @@ public:
         temp = 0.0;
         currentIllness = "NOT YET SCREENED";
     }
-    void setScreening(float temp, string currentIllness) {
+    void setScreening(float temp, string currentIllness){ 
         this->temp = temp;
         this->currentIllness = currentIllness;
+         
     }
-    bool insert() {
+    bool insert(Nurse &obj, string n) { // pass Nurse obj dgn string of patient name n
         cout << "Enter the patient's temperature : ";
         cin >> temp;
         cin.ignore();
         cout << "Enter the patient's current symptoms related to COVID-19 (if any) : ";
         getline(cin, currentIllness);
-
+	
         if (checkTemp())
             return 1;
         else
             return 0;
 
-
+		obj.doScreening(n); // will update Patient's name currently doing screening to list of Nurse
     }
     //This condition will determine whether the patient will be accepted or not
     bool checkTemp() {
@@ -342,6 +339,7 @@ protected:
     int doc;
     string medicine, diagnosis, note, date;
     string dentistname;
+    
     Screening checkScreening;
 
 public:
@@ -394,6 +392,7 @@ public:
             << "Date of treatment : " << obj.date << endl
             << "Additional instructions/note : " << obj.note << endl
             << "Treated by : " << obj.dentistname << endl << endl;
+        
 
         return strm;
     }
@@ -506,8 +505,8 @@ public:
     }
 
     //Adds screening results from the Screening class
-    bool addscreeningResults() {
-        if (screeningResults.insert()) {
+    bool addscreeningResults(Nurse &obj) {
+        if (screeningResults.insert(obj, this->getName())) { // send Nurse obj and Patient Name
             return 1;
         }
         else {
@@ -554,9 +553,10 @@ int main() {
 
     Dentist a("Mr.Amir", 20, "M", "28/7", "012-6805527", "001", "Teeth", "Fulltime", 2300);
     Dentist b("Dr.Anis", 30, "F", "30/6", "012-9999999", "002", "Lips", "Parttime", 1000);
-    Staff* stf[2] = { &a, &b };
+    Nurse c("Ms. Haida", 28, "F", "28/4", "012-5435678", "003", "Parttime", 800);
+    Staff* stf[3] = { &a, &b, &c };
 
-    int chooseMenu = 0, n = 0, choosePatient = 0;
+    int chooseMenu = 0, chooseMenu2 = 0, n = 0, choosePatient = 0;
 
     welcomeInterface();
 
@@ -582,7 +582,7 @@ int main() {
             cout << "\n <<< CHOOSE WHICH PATIENT TO UPDATE BY ENTERING PATIENTS NUMBER (1,2,5,ETC) >>> \n\n";
             cin >> choosePatient;
             cout << "\n <<< ENTER THE SCREENING RESULTS OF PATIENT >>> \n\n";
-            if (patient[choosePatient - 1].addscreeningResults()) {
+            if (patient[choosePatient - 1].addscreeningResults(c)) {
                 cout << "\n <<< ENTER THE TREATMENT RESULTS OF PATIENT >>> \n\n";
                 patient[choosePatient - 1].addtreatmentResults(a, b); //send Dentist objects
             }
@@ -608,7 +608,7 @@ int main() {
         case 4: //4. View staff record
             cout << "<<< LIST OF STAFF >>>" << endl << endl;
             cout << "TOTAL STAFF: 3" << endl << endl;
-            for (int j = 0; j < 2; j++) {
+            for (int j = 0; j < 3; j++) {
                 cout << "### STAFF NUMBER " << j + 1 << " ###" << endl << endl;
                 cout << *stf[j];
                 stf[j]->displayInfo(); //when run only displays First Dentist info, return value 3221226356

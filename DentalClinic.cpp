@@ -218,7 +218,7 @@ public:
 class Nurse : public Staff {
 
 private : 
-	string *screeningList;
+	string screeningList[10];
 	int j = 1;
 public:
 	
@@ -259,16 +259,19 @@ public:
         return 1;
     }
     
-    void doScreening(string ptname=""){
-		screeningList = new string;
-		screeningList[j-1] = ptname;
+    void doScreening(string ptname){
+		this->screeningList[j-1] = ptname;
 		j++;
+	}
+	
+	string showPatient(int n){
+		return screeningList[n];
 	}
 
     void displayInfo() {
         cout << "Patients screened :" << endl;
         for (int i=0; i<j; i++){
-        	cout << i+1 << ". " << &screeningList[i] << endl; //cane nak tunjuk name patient tu?
+        	cout << i+1 << ". " << this->showPatient(i) << endl; //cane nak tunjuk name patient tu?
 		}
     }
 
@@ -289,19 +292,19 @@ public:
         this->currentIllness = currentIllness;
          
     }
-    bool insert(Nurse &obj, string n) { // pass Nurse obj dgn string of patient name n
+    bool insert(Nurse &obj, string &n) { // pass Nurse obj dgn string of patient name n
         cout << "Enter the patient's temperature : ";
         cin >> temp;
         cin.ignore();
         cout << "Enter the patient's current symptoms related to COVID-19 (if any) : ";
         getline(cin, currentIllness);
-	
+		obj.doScreening(n);
         if (checkTemp())
             return 1;
         else
             return 0;
 
-		obj.doScreening(n); // will update Patient's name currently doing screening to list of Nurse
+	 // will update Patient's name currently doing screening to list of Nurse
     }
     //This condition will determine whether the patient will be accepted or not
     bool checkTemp() {
@@ -514,7 +517,8 @@ private:
     Screening screeningResults;
     Appointment appTime;
     Treatment* treatmentResults;
-    string time;
+    string time, k="";
+    friend class Screening;
 public:
     Patient() {
         treatmentResults = new Treatment;
@@ -533,7 +537,8 @@ public:
 
     //Adds screening results from the Screening class
     bool addscreeningResults(Nurse &obj) {
-        if (screeningResults.insert(obj, this->getName())) { // send Nurse obj and Patient Name
+    	k = this->name;
+        if (screeningResults.insert(obj, k)) { // send Nurse obj and Patient Name
             return 1;
         }
         else {
@@ -638,7 +643,7 @@ int main() {
             for (int j = 0; j < 3; j++) {
                 cout << "### STAFF NUMBER " << j + 1 << " ###" << endl << endl;
                 cout << *stf[j];
-                stf[j]->displayInfo(); //when run only displays First Dentist info, return value 3221226356
+                stf[j]->displayInfo(); 
                 cout << "\n============================================================\n";
 
             }
